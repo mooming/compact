@@ -44,6 +44,8 @@ Thus it could cause an expected behavior if its data varied by accident.
 Usage:
 Usage: Compact <path to read the uncompressed data> <path to save the compressed data>
 
+>> Compact.exe raw.txt comp_data.bin
+
 Output Example:
 [Result] Test has succeeded.
 Pass : 74
