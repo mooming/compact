@@ -105,7 +105,7 @@ bool SymbolDataTest::TestWithSourceFile(const char* loadPath, const char* savePa
          {
             if (symData[i] != symData2[i])
             {
-               cerr << "[Error] data mismatched at " + i << endl;
+               cerr << "[Error] data mismatched at " << i << endl;
                ++failCount;
             }
          }
@@ -188,7 +188,7 @@ bool SymbolDataTest::TestWithRandomData()
          {
             if (symData[i] != randData[i])
             {
-               cerr << "[Error] data mismatched at " + i << endl;
+               cerr << "[Error] data mismatched at " << i << endl;
                ++failCount;
             }
          }
