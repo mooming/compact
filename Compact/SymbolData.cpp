@@ -107,11 +107,12 @@ SymbolData SymbolData::LoadUncompressed(const PathString& path)
       return compact;
    }
 
-   Symbol* symData = new Symbol[length];
+   size_t dataLength = static_cast<size_t>(length);
+   Symbol* symData = new Symbol[dataLength];
    ifs.read(reinterpret_cast<char*>(&symData[0]), length);
    ifs.close();
 
-   compact = LoadUncompressed(symData, length);
+   compact = LoadUncompressed(symData, dataLength);
    cout << "Load: " << path << " [raw][done] " << length << " bytes" << endl;
 
    return compact;
