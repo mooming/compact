@@ -27,7 +27,6 @@ public:
    size_t GetLength() const { return length; }
    size_t GetDataBytes() const { return binData.size() * sizeof(DataUnit); }
 
-   void Compress(const std::vector<Symbol>& symTable, const std::vector<Symbol>& symData);
    void Compress(const std::vector<Symbol>& symTable, Symbol* symData, size_t length);
    bool Save(const PathString& path) const;
 
