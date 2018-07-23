@@ -30,7 +30,7 @@ int main(int argc, const char* argv[])
       cout << "Usage: " << argv[0] << " <path to read the uncompressed data>"
          << " <path to save the compressed data>" << endl;
 
-      cout << "Usage: " << argv[0] << "-decomp <compressed data file>"
+      cout << "Usage: " << argv[0] << " -decomp <compressed data file>"
          << " <path to save the decompressed data>" << endl;
 
       return 0;
