@@ -458,3 +458,26 @@ bool SymbolData::Save(const PathString& path) const
 
    return true;
 }
+
+bool SymbolData::SaveDecompressed(const PathString& path) const
+{
+   using namespace std;
+
+   ofstream ofs;
+   ofs.open(path.c_str(), ios::binary);
+   if (!ofs.is_open())
+   {
+      cerr << "[Error] " << __FILE__ << ":" << __LINE__ << "Failed to open a file. " << path << endl;
+      return false;
+   }
+
+   for (size_t i = 0; i < length; ++i)
+   {
+      auto symbol = Get(i);
+      ofs.write(reinterpret_cast<const char*>(&symbol), sizeof(Symbol));
+   }
+
+   ofs.close();
+
+   return true;
+}

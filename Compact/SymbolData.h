@@ -28,6 +28,7 @@ public:
 
    std::vector<Symbol> GetDecompressed() const;
    bool Save(const PathString& path) const;
+   bool SaveDecompressed(const PathString& path) const;
 
 private:
    void Compress(const std::vector<Symbol>& symTable, Symbol* symData, size_t length);

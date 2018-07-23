@@ -1,3 +1,4 @@
+#include "SymbolData.h"
 #include "SymbolDataTest.h"
 
 #include <iostream>
@@ -24,11 +25,26 @@ int main(int argc, const char* argv[])
 
    PrintArgs(argc, argv);
 
-   if (argc != 3)
+   if (argc != 3 && argc != 4)
    {
       cout << "Usage: " << argv[0] << " <path to read the uncompressed data>"
          << " <path to save the compressed data>" << endl;
+
+      cout << "Usage: " << argv[0] << "-decomp <compressed data file>"
+         << " <path to save the decompressed data>" << endl;
+
       return 0;
+   }
+
+   if (argc == 4)
+   {
+      string command(argv[1]);
+      if (command == "-decomp")
+      {
+         auto symData = SymbolData::LoadCompressed(argv[2]);
+         symData.SaveDecompressed(argv[3]);
+         return 0;
+      }
    }
 
    SymbolDataTest sdTest;
