@@ -113,6 +113,8 @@ SymbolData SymbolData::LoadUncompressed(const PathString& path)
    ifs.close();
 
    compact = LoadUncompressed(symData, dataLength);
+   delete[] symData;
+
    cout << "Load: " << path << " [raw][done] " << length << " bytes" << endl;
 
    return compact;
@@ -226,6 +228,10 @@ bool SymbolData::operator==(const SymbolData& rhs) const
 
 SymbolData::Symbol SymbolData::Get(size_t index) const
 {
+   assert(index < length);
+   if (index >= length)
+      return std::numeric_limits<Symbol>::max();
+
    Symbol symbol = 0;
 
    constexpr size_t numUnitBits = sizeof(DataUnit) * 8;
@@ -366,6 +372,53 @@ void SymbolData::Compress(const std::vector<Symbol>& symTable, Symbol * symData,
 
    float compRate = (1.0f - (float)GetDataBytes() / GetLength()) * 100.0f;
    cout << "# Compress Rate = " << compRate << "%, " << GetLength() << " => " << GetDataBytes()  << endl;
+}
+
+std::vector<SymbolData::Symbol> SymbolData::GetDecompressed() const
+{
+   std::vector<Symbol> rawData;
+
+#if 1
+   for (size_t i = 0; i < length; ++i)
+   {
+      rawData.push_back(Get(i));
+   }
+#else
+   // Slower ...
+   uint8_t symInd = 0;
+   uint8_t bitCount = 0;
+
+   for (auto unitValue : binData)
+   {
+      constexpr int numBits = sizeof(DataUnit) * 8;
+      constexpr DataUnit startBit = 1 << (numBits - 1);
+
+      DataUnit readCursor = startBit;
+
+      for (int i = 0; i < numBits; ++i)
+      {
+         symInd = symInd << 1;
+         if ((unitValue & readCursor) != 0)
+         {
+            symInd |= 1;
+         }
+
+         readCursor = readCursor >> 1;
+         ++bitCount;
+
+         if (bitCount == numSymBits)
+         {
+            assert(static_cast<size_t>(symInd) < symTable.size());
+
+            rawData.push_back(symTable[symInd]);
+            symInd = 0;
+            bitCount = 0;
+         }
+      }
+   }
+#endif
+
+   return rawData;
 }
 
 bool SymbolData::Save(const PathString& path) const

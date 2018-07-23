@@ -22,13 +22,15 @@ public:
    bool operator== (const SymbolData& rhs) const;
    bool operator!= (const SymbolData& rhs) const { return !(*this == rhs); }
 
-   // O(1)
    Symbol Get(size_t index) const;
    size_t GetLength() const { return length; }
    size_t GetDataBytes() const { return binData.size() * sizeof(DataUnit); }
 
-   void Compress(const std::vector<Symbol>& symTable, Symbol* symData, size_t length);
+   std::vector<Symbol> GetDecompressed() const;
    bool Save(const PathString& path) const;
+
+private:
+   void Compress(const std::vector<Symbol>& symTable, Symbol* symData, size_t length);
 
 private:
    size_t length;

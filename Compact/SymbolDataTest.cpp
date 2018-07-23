@@ -43,6 +43,8 @@ bool SymbolDataTest::CheckDataWithSourceFile(const char* srcPath, const SymbolDa
 {
    using namespace std;
 
+   auto decompData = symData.GetDecompressed();
+
    ifstream ifs;
    ifs.open(srcPath, ios::binary);
 
@@ -56,10 +58,17 @@ bool SymbolDataTest::CheckDataWithSourceFile(const char* srcPath, const SymbolDa
    while (index < symData.GetLength())
    {
       auto ch = ifs.get();
-      if (ch != symData[index++])
+      if (ch != symData[index])
       {
          return false;
       }
+
+      if (ch != decompData[index])
+      {
+         return false;
+      }
+
+      ++index;
    }
 
    return index == symData.GetLength();
@@ -166,6 +175,7 @@ bool SymbolDataTest::TestWithRandomData()
          MeasureSec measureSec(loadTime);
          symData = SymbolData::LoadUncompressed(randData.data(), randData.size());
       }
+
       cout << "Load & Compress Duration: " << loadTime << " sec, size = " << randData.size() << endl;
       if (loadTime > 5.0f)
          break;
@@ -193,7 +203,27 @@ bool SymbolDataTest::TestWithRandomData()
             }
          }
       }
+
       cout << "Duration: " << duration << " sec, size = " << length << endl;
+      ++passCount;
+
+      duration = 0.0f;
+      vector<SymbolData::Symbol> decompData;
+      {
+         MeasureSec measureSec(duration);
+         decompData = symData.GetDecompressed();
+      }
+
+      for (size_t i = 0; i < length; ++i)
+      {
+         if (decompData[i] != randData[i])
+         {
+            cerr << "[Error] decompressed data mismatched at " << i << endl;
+            ++failCount;
+         }
+      }
+
+      cout << "Decomp. Duration: " << duration << " sec, size = " << length << endl;
       ++passCount;
 
       if (i > 16)
